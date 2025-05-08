@@ -25,6 +25,12 @@
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
   Launch demo modal
 </button>
+<br>
+@if(session('status'))
+    <div class="alert alert-success">
+       {{ session('status') }}
+    </div>
+@endif
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -52,7 +58,10 @@
   <button style="margin-bottom: 10px;" class="btn btn-warning" type="button" onclick="showInfo()">Click Me !</button>
   <div id="showinfo"></div>
 
+  <br>
+  <a href="{{ route('category.create') }}" class="btn btn-primary">+ Add Category</a>
   
+  <br><br>
   <table class="table">
   <thead>
       <tr>

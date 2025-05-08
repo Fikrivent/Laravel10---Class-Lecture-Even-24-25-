@@ -36,6 +36,8 @@ class CategoryController extends Controller
     public function create()
     {
         //
+        $data = Category::all();
+        return view('category.create', compact('data'));
     }
 
     /**
@@ -44,6 +46,11 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         //
+        $category = new Category();
+        $category->name = $request->get('name');
+        $category->save();
+
+        return redirect()->route('category.index')->with('status','Penambahan data kategori berhasil !');
     }
 
     /**
