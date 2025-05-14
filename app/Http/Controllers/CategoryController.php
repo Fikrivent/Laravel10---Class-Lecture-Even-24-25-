@@ -64,25 +64,44 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Category $category)
     {
         //
+        // dd($category);
+        $data = $category;
+        return view('category.update', compact('category'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Category $category)
     {
         //
+        $category->name = $request->name;
+        $category->save();
+
+        return redirect()->route('category.index')->with('status','Update data berhasil !');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Category $category)
     {
         //
+        try {
+            //code...
+            $category->delete();
+            return redirect()->route('category.index')->with('status','Delete data berhasil !');
+        } catch (\PDOException $ex) {
+            //throw $th;
+            $error = "Gagal menghapus data ! Hubungi admin untuk bantuan lebih lanjut.";
+            return redirect()->route("category.index")->with("error",$error);
+        }
+        
+
+        
     }
 
     public function showInfo()

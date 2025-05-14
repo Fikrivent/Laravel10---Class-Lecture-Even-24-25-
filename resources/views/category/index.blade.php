@@ -32,6 +32,12 @@
     </div>
 @endif
 
+@if(session('error'))
+    <div class="alert alert-danger">
+       {{ session('error') }}
+    </div>
+@endif
+
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -70,6 +76,7 @@
         <th>Category Name</th>
         <th>Total Food</th>
         <th>List Menu</th>
+        <th>Action</th>
       </tr>
     </thead>
     <tbody>
@@ -116,6 +123,14 @@
           <!-- @foreach ($r->foods as $f)
               {{ $f->name }}<br> 
           @endforeach -->
+        </td>
+        <td>
+          <a href="{{ route('category.edit', $r->id) }}" class="btn btn-warning">Edit</a>
+          <form method="POST" action="{{ route('category.destroy', $r->id) }}">
+            @csrf
+            @method("DELETE")
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah kamu yakin untuk menghapus data {{ $r->id .'-'.$r->name }} ini ?')">Delete</button>
+          </form>
         </td>
       </tr>
       @endforeach
