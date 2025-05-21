@@ -22,6 +22,64 @@
 </div>
 @endpush
 
+@push('modals')
+  <div class="modal fade" id="btnFormModal" tabindex="-1" role="basic" aria-hidden="true">
+ <div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+       <h4 class="modal-title">Add New Category</h4>
+    </div>
+  <div class="modal-body">
+    <form method="POST" action="{{ route('category.store') }}">
+            @csrf
+            <div class="form-group">
+                <!-- <select class="form-control">
+                    @foreach ($data as $d)
+                        <option>{{  $d->name }}</option>
+                    @endforeach
+                </select>
+                <br> -->
+                <label for="name">Name</label>
+                <input type="text" class="form-control" id="name" name="name" aria-describedby="name"
+                    placeholder="Enter Category Name" required>
+                <small id="name" class="form-text text-muted">Please write down Category Name here.</small>
+            </div>
+            
+  </div>
+  <div class="modal-footer">
+      <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+      <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+  </div>
+ </div>
+ </div>
+</div>
+@endpush
+
+@push("modals")
+<div class="modal fade" id="modalEditA" tabindex="-1" role="basic" aria-hidden="true">
+   <div class="modal-dialog modal-wide">
+       <div class="modal-content" >
+          <div class="modal-body" id="modalContent">
+              {{-- You can put animated loading image here... --}}
+          </div>
+       </div>
+   </div>
+</div> 
+
+<div class="modal fade" id="modalEditB" tabindex="-1" role="basic" aria-hidden="true">
+   <div class="modal-dialog modal-wide">
+       <div class="modal-content" >
+          <div class="modal-body" id="modalContentB">
+              {{-- You can put animated loading image here... --}}
+          </div>
+       </div>
+   </div>
+</div> 
+
+@endpush
+
+
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
   Launch demo modal
 </button>
@@ -66,7 +124,7 @@
 
   <br>
   <a href="{{ route('category.create') }}" class="btn btn-primary">+ Add Category</a>
-  
+  <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#btnFormModal">+ Add Category using Modal</button>
   <br><br>
   <table class="table">
   <thead>
@@ -81,10 +139,10 @@
     </thead>
     <tbody>
       @foreach ($data as $r)
-      <tr>
+      <tr id="tr_{{ $r->id }}">
         <td>{{ $r->id }}</td>
         <td>
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" 
+          <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" 
               data-bs-target="#imageModal-{{ $r->id }}">
             Show
           </button>
@@ -111,10 +169,10 @@
           @endpush
 
         </td>
-        <td>{{ $r->name }}</td>
+        <td id="td_name_{{ $r->id }}">{{ $r->name }}</td>
         <td>{{ count($r->foods) }}</td>
         <td>
-            <button type="button" class="btn btn-info" data-bs-toggle="modal" 
+            <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" 
               data-bs-target="#detailModal" onclick="showDetail({{ $r->id }})">
             Details
             </button>
@@ -125,11 +183,20 @@
           @endforeach -->
         </td>
         <td>
-          <a href="{{ route('category.edit', $r->id) }}" class="btn btn-warning">Edit</a>
+          <a href="{{ route('category.edit', $r->id) }}" class="btn btn-warning btn-sm">Edit</a>
+          <a data-bs-toggle="modal" data-bs-target="#modalEditA" onclick="getEditForm({{  $r->id}})" class="btn btn-warning btn-sm">Edit with Modal(Type A)</a>
+
+          <a data-bs-toggle="modal" data-bs-target="#modalEditB" onclick="getEditFormB({{  $r->id}})" class="btn btn-info btn-sm">Edit with Modal(Type B)</a>
+
+          <a href="#" value="DeleteNoReload" class="btn btn-danger btn-sm"
+            onclick="if(confirm('Are you sure to delete {{ $r->id }} - {{ $r->name }} ? ')) 
+                     deleteDataRemove({{ $d->id }})">Delete without Reload
+          </a>
+
           <form method="POST" action="{{ route('category.destroy', $r->id) }}">
             @csrf
             @method("DELETE")
-            <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah kamu yakin untuk menghapus data {{ $r->id .'-'.$r->name }} ini ?')">Delete</button>
+            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah kamu yakin untuk menghapus data {{ $r->id .'-'.$r->name }} ini ?')">Delete</button>
           </form>
         </td>
       </tr>
@@ -165,6 +232,76 @@
         }
       });
     }
+
+    function getEditForm(id)
+    {
+      $.ajax({
+      type:'POST',
+      url:'{{route("kategori.getEditForm")}}',
+      data: {
+        '_token' : '<?php echo csrf_token() ?>',
+        'id': id
+      },
+      success: function(data){
+        $('#modalContent').html(data.msg)
+      }
+      });
+    }
+
+    function getEditFormB(id)
+    {
+      $.ajax({
+      type:'POST',
+      url:'{{route("kategori.getEditFormB")}}',
+      data: {
+        '_token' : '<?php echo csrf_token() ?>',
+        'id': id
+      },
+      success: function(data){
+        $('#modalContentB').html(data.msg)
+      }
+      });
+    }
+
+    function saveDataUpdate(id) {
+      var name = $('#ename').val();
+      
+      console.log(name); //debug->print to browser console
+      $.ajax({
+        type: 'POST',
+        url: '{{ route("kategori.saveDataUpdate") }}',
+        data: {
+          '_token': '<?php echo csrf_token(); ?>',
+          'id': id,
+          'name': name,          
+        },
+        success: function(data) {
+          if (data.status == "oke") {
+            $('#td_name_' + id).html(name);
+            $('#modalEditB').modal('hide');
+          }
+        }
+      })
+    }
+
+    function deleteDataRemove(id)
+ {
+  $.ajax({
+   type:'POST',
+   url:'{{route("kategori.deleteData")}}',
+   data: {
+    '_token' : '<?php echo csrf_token() ?>',
+    'id': id
+   },
+   success: function(data){
+    if(data.status == "oke")
+    {
+     $('#tr_'+id).remove();
+    }
+   }
+  });
+ }
+
 
 
   </script>

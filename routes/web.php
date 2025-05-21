@@ -80,3 +80,15 @@ Route::view('index2', 'index2');
 Route::post('category/showInfo', [CategoryController::class, 'showInfo'])->name('category.showInfo');
 
 Route::post("/category/showListFoods", [CategoryController::class, 'showListFoods'])->name("category.showListFoods");
+
+Route::post('/ajax/category/getEditForm',[CategoryController::class,'getEditForm'])->name('kategori.getEditForm');
+
+Route::post('/ajax/category/getEditFormB',[CategoryController::class,'getEditFormB'])
+            ->name('kategori.getEditFormB');
+
+Route::post('/ajax/category/saveDataUpdate',[CategoryController::class,'saveDataUpdate'])
+            ->name('kategori.saveDataUpdate');
+
+Route::post('/ajax/category/deleteData',[CategoryController::class,'deleteData'])
+        ->name('kategori.deleteData');
+    
