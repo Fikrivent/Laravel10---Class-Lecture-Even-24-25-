@@ -10,17 +10,18 @@ class Food extends Model
 {
     use HasFactory;
 
-    protected $table = "foods";
-    protected $primaryKey = "id";
+    protected $table = 'foods';
+    protected $primaryKey = 'id';
     public $timestamps = true;
 
-    /**
-     * Get the user that owns the Food
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function category(): BelongsTo
-    {
-        return $this->belongsTo(Category::class, 'category_id', 'id')->withTrashed();
+    public function category(): BelongsTo{
+        return $this->belongsTo(Category::class,'category_id')
+                ->withTrashed();
     }
+
+    public function orders(){
+        return $this->belongToMany(Order::class,"table_dmorderfood","food_id", "order_id")
+              ->withPivot('quantity');
+    }
+
 }

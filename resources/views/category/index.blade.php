@@ -193,11 +193,13 @@
                      deleteDataRemove({{ $d->id }})">Delete without Reload
           </a>
 
+          @can('delete-permission', Auth::user())
           <form method="POST" action="{{ route('category.destroy', $r->id) }}">
             @csrf
             @method("DELETE")
             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah kamu yakin untuk menghapus data {{ $r->id .'-'.$r->name }} ini ?')">Delete</button>
           </form>
+          @endcan
         </td>
       </tr>
       @endforeach

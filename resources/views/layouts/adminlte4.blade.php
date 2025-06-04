@@ -222,7 +222,11 @@
                   class="user-image rounded-circle shadow"
                   alt="User Image"
                 />
-                <span class="d-none d-md-inline">Alexander Pierce</span>
+                @if (!Auth::user())
+                @else
+                <span class="d-none d-md-inline">{{ Auth::user()->name }}</span>
+                @endif
+                
               </a>
               <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                 <!--begin::User Image-->
@@ -252,7 +256,11 @@
                 <!--begin::Menu Footer-->
                 <li class="user-footer">
                   <a href="#" class="btn btn-default btn-flat">Profile</a>
-                  <a href="#" class="btn btn-default btn-flat float-end">Sign out</a>
+                  <form action="{{ route('logout') }}" method="post">
+                    @csrf
+                    <input type="submit" value="logout" class='btn btn-danger' />
+                  </form>
+
                 </li>
                 <!--end::Menu Footer-->
               </ul>

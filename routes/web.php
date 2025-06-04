@@ -69,8 +69,8 @@ Route::get('/users/{name?}', function($name="John Doe"){
 //     return $url;
 // });
 
-Route::resource("food", FoodController::class);
-Route::resource('category', CategoryController::class);
+Route::resource("food", FoodController::class)->middleware('auth');
+Route::resource('category', CategoryController::class)->middleware('auth');
 
 Route::get('/totalFoods', [CategoryController::class, "totalFoods"]);
 // Route::get('/totalFoods',"CategoryController@totalFoods");
@@ -92,3 +92,6 @@ Route::post('/ajax/category/saveDataUpdate',[CategoryController::class,'saveData
 Route::post('/ajax/category/deleteData',[CategoryController::class,'deleteData'])
         ->name('kategori.deleteData');
     
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
